@@ -65,7 +65,7 @@ clean architecture, solid OOP design, safe concurrency, restart resilience, and 
 ---
 
 ## High-Level Architecture
-
+```
 Client
 ↓
 Scheduler API
@@ -77,7 +77,7 @@ Execution Strategy (Strategy Pattern)
 Thread Pool (ExecutorService)
 ↓
 Job Persistence (MySQL)
-
+```
 ---
 
 ## Job Types Supported

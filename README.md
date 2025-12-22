@@ -81,65 +81,65 @@ Job Persistence (MySQL)
 ---
 
 ## Job Types Supported
--One-time jobs
--Execute immediately or at a fixed timestamp
--Delayed jobs
--Execute after a configured delay
--Recurring jobs
--Execute repeatedly at a fixed interval
--Priority jobs
--Higher priority jobs are executed before lower priority ones
+- One-time jobs
+- Execute immediately or at a fixed timestamp
+- Delayed jobs
+- Execute after a configured delay
+- Recurring jobs
+- Execute repeatedly at a fixed interval
+- Priority jobs
+- Higher priority jobs are executed before lower priority ones
 
 --- 
 
 ## Design Highlights
--Concurrency-first approach
--Thread-safe queues and clear execution boundaries to avoid race conditions
--Separation of concerns
--Scheduling, execution, persistence, and recovery are cleanly decoupled
--Restart resilience
--Pending jobs are reloaded and rescheduled automatically on startup
--Extensible core
--New job types or execution strategies can be added without modifying existing logic
+- Concurrency-first approach
+- Thread-safe queues and clear execution boundaries to avoid race conditions
+- Separation of concerns
+- Scheduling, execution, persistence, and recovery are cleanly decoupled
+- Restart resilience
+- Pending jobs are reloaded and rescheduled automatically on startup
+- Extensible core
+- New job types or execution strategies can be added without modifying existing logic
 
 ---
 
 ## Configuration
--Key scheduler properties:
+- Key scheduler properties:
 
 scheduler.thread.pool.size=10
 scheduler.retry.enabled=true
 scheduler.recovery.enabled=true
 
--Located in:
+- Located in:
 src/main/resources/application.properties
 
 ---
 
 ## Testing Strategy
--Unit tests for scheduling and execution logic
--Controlled executor usage for concurrency edge cases
--Persistence logic tested independently
+- Unit tests for scheduling and execution logic
+- Controlled executor usage for concurrency edge cases
+- Persistence logic tested independently
 
 ---
 
 ## Future Improvements
--Redis-backed distributed queue
--Micrometer metrics with Prometheus/Grafana
--Docker Compose setup (App + MySQL)
--Retry & exponential backoff strategies
--Job execution analytics and dashboards
--Distributed scheduling with leader election
--Load and stress testing
+- Redis-backed distributed queue
+- Micrometer metrics with Prometheus/Grafana
+- Docker Compose setup (App + MySQL)
+- Retry & exponential backoff strategies
+- Job execution analytics and dashboards
+- Distributed scheduling with leader election
+- Load and stress testing
 
 ---
 
 ## Why This Project?
--This project is designed to demonstrate real backend engineering depth:
--Strong understanding of Java concurrency
--Practical application of SOLID principles & design patterns
--Handling of failure scenarios, restarts, and recovery
--Architecture that scales beyond a single JVM
+- This project is designed to demonstrate real backend engineering depth:
+- Strong understanding of Java concurrency
+- Practical application of SOLID principles & design patterns
+- Handling of failure scenarios, restarts, and recovery
+- Architecture that scales beyond a single JVM
 
 ---
 

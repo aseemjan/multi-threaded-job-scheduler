@@ -1,4 +1,4 @@
-package com.scheduler.jobscheduler.execution;
+package com.scheduler.jobscheduler.execution.strategy;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;

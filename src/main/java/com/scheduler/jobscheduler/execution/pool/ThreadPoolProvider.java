@@ -1,4 +1,4 @@
-package com.scheduler.jobscheduler.executor;
+package com.scheduler.jobscheduler.execution.pool;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;

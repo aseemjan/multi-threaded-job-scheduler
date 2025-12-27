@@ -1,15 +1,17 @@
 package com.scheduler.jobscheduler.execution.strategy;
 
-import java.util.concurrent.ExecutorService;
+import com.scheduler.jobscheduler.execution.executor.JobExecutor;
 
 public class ImmediateExecutionStrategy implements ExecutionStrategy {
-    private final ExecutorService executorService;
 
-    public ImmediateExecutionStrategy(ExecutorService executorService){
-        this.executorService = executorService;
+    private final JobExecutor jobExecutor;
+
+
+    public ImmediateExecutionStrategy(JobExecutor jobExecutor){
+        this.jobExecutor = jobExecutor;
     }
     @Override
     public void execute(Runnable task){
-        executorService.submit(task);
+        jobExecutor.execute(task);
     }
 }

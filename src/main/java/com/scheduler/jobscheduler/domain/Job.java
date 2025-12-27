@@ -59,4 +59,8 @@ public class Job {
     public Instant getCreatedAt() {
         return createdAt;
     }
+
+    public boolean isTerminal(){
+        return status == JobStatus.COMPLETED || status == JobStatus.FAILED;
+    }
 }

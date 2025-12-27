@@ -21,11 +21,11 @@ public class JobSchedule {
         return new JobSchedule(null, delayMillis, null);
     }
 
-    public static JobSchedule recurrung(Long intervalMillis){
+    public static JobSchedule recurring(Long intervalMillis){
         return new JobSchedule(null, null, intervalMillis);
     }
 
-    public Instant getInstantExecutionTime(){
+    public Instant getExecutionTime(){
         return executionTime;
     }
 

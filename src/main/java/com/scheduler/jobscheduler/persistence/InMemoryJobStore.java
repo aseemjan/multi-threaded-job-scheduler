@@ -1,0 +1,38 @@
+package com.scheduler.jobscheduler.persistence;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+import com.scheduler.jobscheduler.domain.Job;
+import com.scheduler.jobscheduler.domain.JobStatus;
+
+
+public class InMemoryJobStore implements JobStore{
+    private final ConcurrentHashMap<String, Job> store = new ConcurrentHashMap<>();
+
+    @Override
+    public void save(Job job) {
+        store.put(job.getId(), job);
+    }
+
+    @Override
+    public void update(Job job) {
+        store.put(job.getId(), job);
+    }
+
+    @Override
+    public List<Job> findByStatus(JobStatus status) {
+        return store.values()
+                .stream()
+                .filter(job -> job.getStatus() == status)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Job> findAll() {
+        return new ArrayList<>(store.values());
+    }
+
+}

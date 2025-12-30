@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import com.scheduler.jobscheduler.domain.Job;
 import com.scheduler.jobscheduler.domain.JobStatus;
@@ -23,11 +24,16 @@ public class InMemoryJobStore implements JobStore{
     }
 
     @Override
-    public List<Job> findByStatus(JobStatus status) {
-        return store.values()
-                .stream()
-                .filter(job -> job.getStatus() == status)
-                .collect(Collectors.toList());
+    public List<Job> findByStatus(List<JobStatus> statuses) {
+
+        List<Job> result = new ArrayList<>();
+
+        for (Job job : store.values()) {
+            if (statuses.contains(job.getStatus())) {
+                result.add(job);
+            }
+        }
+        return result;
     }
 
     @Override

@@ -9,7 +9,7 @@ public interface JobStore {
 
     void update(Job job);
 
-    List<Job> findByStatus(JobStatus status);
-
     List<Job> findAll();
+
+    List<Job> findByStatus(List<JobStatus> statuses);
 }

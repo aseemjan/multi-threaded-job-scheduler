@@ -40,11 +40,4 @@ public class JobScheduler {
 
         wrappedTask.run();
     }
-    public void recoverJobs() {
-        List<Job> pendingJobs = jobStore.findByStatus(JobStatus.CREATED);
-        List<Job> scheduledJobs = jobStore.findByStatus(JobStatus.SCHEDULED);
-
-        pendingJobs.forEach(this::schedule);
-        scheduledJobs.forEach(this::schedule);
-    }
 }

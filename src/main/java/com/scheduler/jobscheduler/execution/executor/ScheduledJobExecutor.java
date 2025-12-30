@@ -2,19 +2,23 @@ package com.scheduler.jobscheduler.execution.executor;
 
 import com.scheduler.jobscheduler.execution.pool.ThreadPoolProvider;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ScheduledJobExecutor implements JobExecutor{
 
-    private final ExecutorService executorService;
+    private final ScheduledExecutorService scheduledExecutorService;
 
-    public ScheduledJobExecutor(){
-        this.executorService = ThreadPoolProvider.scheduledPool();
+    public ScheduledJobExecutor() {
+        this.scheduledExecutorService = ThreadPoolProvider.scheduledPool();
     }
 
     @Override
     public void execute(Runnable task){
-        executorService.submit(task);
+        scheduledExecutorService.submit(task);
+    }
+
+    public void executeWithDelay(Runnable task, long delayMillis) {
+        scheduledExecutorService.schedule(task, delayMillis, TimeUnit.MILLISECONDS);
     }
 }

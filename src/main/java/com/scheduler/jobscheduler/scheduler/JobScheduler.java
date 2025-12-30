@@ -27,7 +27,7 @@ public class JobScheduler {
                 job.markRunning();
                 jobStore.update(job);
 
-                strategy.execute(() -> {
+                strategy.execute(job,() -> {
                     // actual job logic will go here later
                 });
                 job.markCompleted();

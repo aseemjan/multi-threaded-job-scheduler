@@ -10,7 +10,6 @@ import com.scheduler.jobscheduler.execution.strategy.ScheduledExecutionStrategy;
 
 public class ExecutionStrategyFactory {
     private ExecutionStrategyFactory() {
-
     }
 
     public static ExecutionStrategy getStrategy(JobType jobType) {

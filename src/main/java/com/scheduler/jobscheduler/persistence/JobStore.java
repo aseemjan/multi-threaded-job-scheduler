@@ -11,5 +11,7 @@ public interface JobStore {
 
     List<Job> findAll();
 
+    List<Job> findRecoverableJobs();
+
     List<Job> findByStatus(List<JobStatus> statuses);
 }

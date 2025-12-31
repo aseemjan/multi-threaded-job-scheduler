@@ -12,20 +12,37 @@ import com.scheduler.jobscheduler.persistence.InMemoryJobStore;
 import com.scheduler.jobscheduler.persistence.JobStore;
 import com.scheduler.jobscheduler.scheduler.JobScheduler;
 
+import com.scheduler.jobscheduler.domain.Job;
+import com.scheduler.jobscheduler.domain.JobType;
+
+import com.scheduler.jobscheduler.domain.JobSchedule;
+import com.scheduler.jobscheduler.domain.Job;
+import com.scheduler.jobscheduler.domain.JobType;
+
+import java.time.Instant;
+
+
 @SpringBootApplication
 public class JobSchedulerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JobSchedulerApplication.class, args);
-
         JobStore jobStore = new InMemoryJobStore();
         JobScheduler jobScheduler = new JobScheduler(jobStore);
 
         SchedulerBootstrap bootstrap =
                 new SchedulerBootstrap(jobStore, jobScheduler);
-
         bootstrap.start();
-	}
+
+        JobSchedule schedule = JobSchedule.oneTime(Instant.now());
+
+        Job job = new Job(
+                JobType.ONETIME,
+                schedule,
+                1
+        );
+
+        jobScheduler.schedule(job);
+    }
 
     @Bean
     ApplicationRunner recoveryRunner(JobRecoveryService recoveryService) {

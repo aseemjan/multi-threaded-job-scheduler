@@ -1,9 +1,9 @@
 package com.scheduler.jobscheduler;
 
-import org.springframework.boot.SpringApplication;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.scheduler.jobscheduler.scheduler.JobRecoveryService;
-import org.springframework.boot.ApplicationArguments;
+
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 
@@ -16,8 +16,6 @@ import com.scheduler.jobscheduler.domain.Job;
 import com.scheduler.jobscheduler.domain.JobType;
 
 import com.scheduler.jobscheduler.domain.JobSchedule;
-import com.scheduler.jobscheduler.domain.Job;
-import com.scheduler.jobscheduler.domain.JobType;
 
 import java.time.Instant;
 

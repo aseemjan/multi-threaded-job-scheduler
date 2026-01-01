@@ -1,12 +1,9 @@
 package com.scheduler.jobscheduler.scheduler;
 
 import com.scheduler.jobscheduler.domain.Job;
-import com.scheduler.jobscheduler.domain.JobStatus;
 import com.scheduler.jobscheduler.execution.ExecutionTokenGenerator;
 import com.scheduler.jobscheduler.execution.strategy.ExecutionStrategy;
 import com.scheduler.jobscheduler.persistence.JobStore;
-
-import java.util.List;
 
 import com.scheduler.jobscheduler.metrics.JobMetrics;
 
@@ -54,7 +51,7 @@ public class JobScheduler {
                 );
 
                 strategy.execute(job, () -> {
-                    // actual job logic will go here later
+                    // actual job logic
                 });
 
                 job.markCompleted();

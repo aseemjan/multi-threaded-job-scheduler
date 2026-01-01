@@ -3,8 +3,6 @@ package com.scheduler.jobscheduler.persistence;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.Map;
 
 import com.scheduler.jobscheduler.domain.Job;
 import com.scheduler.jobscheduler.domain.JobStatus;

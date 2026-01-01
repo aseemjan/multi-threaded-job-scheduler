@@ -5,7 +5,7 @@ import java.util.UUID;
 public final class ExecutionTokenGenerator {
 
     private ExecutionTokenGenerator() {
-        // utility class
+
     }
 
     public static String generate() {

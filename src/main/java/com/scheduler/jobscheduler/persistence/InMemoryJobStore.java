@@ -43,13 +43,12 @@ public class InMemoryJobStore implements JobStore{
 
     @Override
     public List<Job> findRecoverableJobs() {
-        return store.values().stream()
-                .filter(job ->
-                        job.getStatus() == JobStatus.CREATED ||
-                                job.getStatus() == JobStatus.SCHEDULED ||
-                                job.getStatus() == JobStatus.RUNNING
+        return findByStatus(
+                List.of(
+                        JobStatus.SCHEDULED,
+                        JobStatus.RUNNING
                 )
-                .toList();
+        );
     }
 
 }

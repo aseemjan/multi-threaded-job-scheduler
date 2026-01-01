@@ -7,6 +7,9 @@ import com.scheduler.jobscheduler.persistence.JobStore;
 
 import java.util.List;
 
+import com.scheduler.jobscheduler.metrics.JobMetrics;
+
+
 public class JobScheduler {
 
     private final JobStore jobStore;
@@ -17,7 +20,13 @@ public class JobScheduler {
 
     public void schedule(Job job){
         job.markScheduled();
+        JobMetrics.incrementCreated();
         jobStore.save(job);
+
+        System.out.println(
+                "[JOB-SCHEDULED] jobId=" + job.getId() +
+                        " type=" + job.getType()
+        );
 
         ExecutionStrategy strategy =
                 ExecutionStrategyFactory.getStrategy(job.getType());
@@ -25,16 +34,35 @@ public class JobScheduler {
         Runnable wrappedTask = () -> {
             try {
                 job.markRunning();
+                JobMetrics.incrementRunning();
                 jobStore.update(job);
+
+                System.out.println(
+                        "[JOB-STARTED] jobId=" + job.getId() +
+                                " thread=" + Thread.currentThread().getName()
+                );
 
                 strategy.execute(job,() -> {
                     // actual job logic will go here later
                 });
                 job.markCompleted();
+                JobMetrics.decrementRunning();
+                JobMetrics.incrementCompleted();
                 jobStore.update(job);
+
+                System.out.println(
+                        "[JOB-COMPLETED] jobId=" + job.getId()
+                );
             } catch (Exception ex) {
                 job.markFailed();
+                JobMetrics.decrementRunning();
+                JobMetrics.incrementFailed();
                 jobStore.update(job);
+
+                System.out.println(
+                        "[JOB-FAILED] jobId=" + job.getId() +
+                                " error=" + ex.getMessage()
+                );
             }
         };
 

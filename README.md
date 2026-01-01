@@ -2,144 +2,138 @@
 
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Concurrency](https://img.shields.io/badge/Concurrency-ExecutorService-blue)
-![Spring Boot](https://img.shields.io/badge/Spring-Boot-brightgreen)
-![Database](https://img.shields.io/badge/Database-MySQL-blue)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ---
 
 ![Banner](https://raw.githubusercontent.com/aseemjan/multi-threaded-job-scheduler/main/src/main/assets/banner.png)
 
-*A production-oriented job scheduling system built with Java and Spring.*
+*A production-oriented job scheduling system built with Java, focusing on concurrency, correctness, and recovery.*
 
-This project focuses on building a **concurrency-safe, extensible job scheduler** capable of executing  
-**one-time, delayed, recurring, and priority-based jobs** using custom thread pools.
+This project models a **real backend scheduling system**, emphasizing:
+- safe concurrent execution
+- clean object-oriented design
+- restart resilience
+- idempotent job execution
+- observability through metrics and logs
 
-Instead of being a simple scheduler demo, the goal here is to model **real backend systems** —
-clean architecture, solid OOP design, safe concurrency, restart resilience, and observability.
+Rather than a demo scheduler, the goal is to reflect how **production-grade backend systems** are designed and evolved incrementally.
 
 ---
 
 ## Key Features
 
 - 🧵 **Multi-threaded execution engine**  
-  Custom `ExecutorService`–based thread pools with controlled parallelism
+  Jobs are executed using `ExecutorService`–based thread pools with controlled parallelism.
 
-- ⏱️ **Flexible scheduling**
+- ⏱️ **Flexible scheduling model**
     - One-time jobs
     - Delayed jobs
-    - Recurring jobs
-    - Priority-based execution
+    - Recurring jobs  
+      (via pluggable execution strategies)
 
-- 🧠 **OOP-driven design**
-    - Strategy pattern for execution policies
-    - Factory pattern for job creation
-    - Template Method for job lifecycle control
+- 🧠 **OOP-driven architecture**
+    - Strategy pattern for execution behavior
+    - Factory pattern for strategy selection
+    - Clear lifecycle boundaries for scheduling, execution, and recovery
 
 - 💾 **Persistent job storage**
-    - MySQL-backed job metadata
-    - Automatic recovery and rescheduling on application restart
+    - Jobs are stored via a persistence abstraction
+    - Enables reload and rescheduling after application restarts
 
-- 🔁 **Resilience & fault tolerance**
-    - Safe handling of in-flight and pending jobs
-    - Sub-2 second recovery for persisted jobs
+- 🔁 **Restart resilience**
+    - Jobs in `SCHEDULED` or `RUNNING` state are recovered on restart
+    - Interrupted jobs are safely handled and rescheduled
+
+- 🔐 **Idempotent execution guard**
+    - Execution ownership tokens prevent duplicate job execution
+    - Guarantees at-most-once execution per job attempt, even during recovery
 
 - 📊 **Observability-ready**
-    - Structured logging
-    - Health endpoints
-    - Metrics-friendly design (Micrometer-ready)
+    - Structured lifecycle logs
+    - Internal metrics counters for job states
+    - Designed to be easily extended with monitoring systems
 
 ---
 
 ## Tech Stack
 
 - Java 17
-- Spring Boot
-- Java Concurrency (`ExecutorService`, `BlockingQueue`)
-- MySQL (job persistence)
-- Spring Data JPA
-- Flyway (schema migrations)
-- SLF4J / Logback
-- JUnit 5
+- Java Concurrency (`ExecutorService`, `ConcurrentHashMap`)
+- Spring Boot (application bootstrap)
+- MySQL (job persistence abstraction)
+- JUnit 5 (testing)
 
 ---
 
 ## High-Level Architecture
+
+
 ```
-Client
+Client / Bootstrap
 ↓
-Scheduler API
-↓
-Job Dispatcher
+JobScheduler
 ↓
 Execution Strategy (Strategy Pattern)
 ↓
-Thread Pool (ExecutorService)
+ExecutorService (Thread Pool)
 ↓
-Job Persistence (MySQL)
+JobStore (Persistence)
 ```
+
 ---
 
-## Job Types Supported
-- One-time jobs
-- Execute immediately or at a fixed timestamp
-- Delayed jobs
-- Execute after a configured delay
-- Recurring jobs
-- Execute repeatedly at a fixed interval
-- Priority jobs
-- Higher priority jobs are executed before lower priority ones
+## Job Lifecycle Overview
 
---- 
+1. Job is scheduled and persisted
+2. Execution ownership is acquired using a token
+3. Job is executed via the selected strategy
+4. On success or failure:
+    - execution ownership is released
+    - metrics and logs are updated
+5. On application restart:
+    - recoverable jobs are reloaded and rescheduled safely
+
+---
 
 ## Design Highlights
-- Concurrency-first approach
-- Thread-safe queues and clear execution boundaries to avoid race conditions
-- Separation of concerns
-- Scheduling, execution, persistence, and recovery are cleanly decoupled
-- Restart resilience
-- Pending jobs are reloaded and rescheduled automatically on startup
-- Extensible core
-- New job types or execution strategies can be added without modifying existing logic
 
----
-
-## Configuration
-- Key scheduler properties:
-
-scheduler.thread.pool.size=10
-scheduler.retry.enabled=true
-scheduler.recovery.enabled=true
-
-- Located in:
-src/main/resources/application.properties
+- Concurrency-first design with thread-safe data structures
+- Clear separation of concerns:
+    - scheduling
+    - execution
+    - persistence
+    - recovery
+- Restart-safe execution model
+- Extensible core — new execution strategies can be added without modifying existing logic
 
 ---
 
 ## Testing Strategy
-- Unit tests for scheduling and execution logic
-- Controlled executor usage for concurrency edge cases
-- Persistence logic tested independently
+
+- Unit tests for core scheduling and execution paths
+- In-memory job store used to validate recovery and idempotency behavior
+- Controlled execution to reason about concurrency edge cases
 
 ---
 
-## Future Improvements
-- Redis-backed distributed queue
-- Micrometer metrics with Prometheus/Grafana
-- Docker Compose setup (App + MySQL)
-- Retry & exponential backoff strategies
-- Job execution analytics and dashboards
-- Distributed scheduling with leader election
-- Load and stress testing
+## Future Enhancements
+
+- Execution timeouts & stuck job detection
+- Graceful shutdown handling
+- Metrics export (Micrometer / Prometheus)
+- Distributed execution using external queues
+- Job analytics and dashboards
 
 ---
 
 ## Why This Project?
-- This project is designed to demonstrate real backend engineering depth:
-- Strong understanding of Java concurrency
-- Practical application of SOLID principles & design patterns
-- Handling of failure scenarios, restarts, and recovery
-- Architecture that scales beyond a single JVM
+
+This project was built to demonstrate **practical backend engineering skills**, including:
+- Java concurrency and thread-safety
+- Application of design patterns
+- Handling of failures and restarts
+- Building systems that behave correctly under real-world conditions
 
 ---
 
@@ -148,6 +142,7 @@ src/main/resources/application.properties
 ```bash
 mvn spring-boot:run
 
+```
 The application starts on:
-
 http://localhost:8081
+```

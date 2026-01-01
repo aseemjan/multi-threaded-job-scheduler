@@ -145,4 +145,3 @@ mvn spring-boot:run
 ```
 The application starts on:
 http://localhost:8081
-```

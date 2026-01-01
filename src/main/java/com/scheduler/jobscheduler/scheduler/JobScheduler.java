@@ -2,6 +2,7 @@ package com.scheduler.jobscheduler.scheduler;
 
 import com.scheduler.jobscheduler.domain.Job;
 import com.scheduler.jobscheduler.domain.JobStatus;
+import com.scheduler.jobscheduler.execution.ExecutionTokenGenerator;
 import com.scheduler.jobscheduler.execution.strategy.ExecutionStrategy;
 import com.scheduler.jobscheduler.persistence.JobStore;
 
@@ -32,6 +33,16 @@ public class JobScheduler {
                 ExecutionStrategyFactory.getStrategy(job.getType());
 
         Runnable wrappedTask = () -> {
+            String token = ExecutionTokenGenerator.generate();
+
+            boolean acquired = job.tryAcquireExecution(token);
+            if (!acquired) {
+                System.out.println(
+                        "[JOB-SKIPPED] jobId=" + job.getId() + " reason=already-running"
+                );
+                return;
+            }
+
             try {
                 job.markRunning();
                 JobMetrics.incrementRunning();
@@ -42,10 +53,12 @@ public class JobScheduler {
                                 " thread=" + Thread.currentThread().getName()
                 );
 
-                strategy.execute(job,() -> {
+                strategy.execute(job, () -> {
                     // actual job logic will go here later
                 });
+
                 job.markCompleted();
+                job.releaseExecution();          // ✅ RELEASE ON SUCCESS
                 JobMetrics.decrementRunning();
                 JobMetrics.incrementCompleted();
                 jobStore.update(job);
@@ -53,8 +66,10 @@ public class JobScheduler {
                 System.out.println(
                         "[JOB-COMPLETED] jobId=" + job.getId()
                 );
+
             } catch (Exception ex) {
                 job.markFailed();
+                job.releaseExecution();          // ✅ RELEASE ON FAILURE
                 JobMetrics.decrementRunning();
                 JobMetrics.incrementFailed();
                 jobStore.update(job);

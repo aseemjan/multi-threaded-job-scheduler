@@ -10,6 +10,8 @@ public class Job {
     private final JobSchedule schedule;
     private final int priority;
     private final Instant createdAt;
+    private String executionToken;
+
 
     public Job(JobType type, JobSchedule schedule, int priority){
         this.id = UUID.randomUUID().toString();
@@ -62,5 +64,21 @@ public class Job {
 
     public boolean isTerminal(){
         return status == JobStatus.COMPLETED || status == JobStatus.FAILED;
+    }
+
+    public synchronized boolean tryAcquireExecution(String token) {
+        if (this.executionToken != null) {
+            return false;
+        }
+        this.executionToken = token;
+        return true;
+    }
+
+    public synchronized void releaseExecution() {
+        this.executionToken = null;
+    }
+
+    public String getExecutionToken() {
+        return executionToken;
     }
 }
